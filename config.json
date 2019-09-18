@@ -1,13 +1,13 @@
 {
-    "name": "Mnist_LeNet",
+    "name": "JointOprimization",
     "n_gpu": 2,
 
     "arch": {
-        "type": "MnistModel",
+        "type": "JointOprimization",
         "args": {}
     },
     "data_loader": {
-        "type": "MnistDataLoader",
+        "type": "CIFAR10DataLoader",
         "args":{
             "data_dir": "~/data/",
             "batch_size": 256,

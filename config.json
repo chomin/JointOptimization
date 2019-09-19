@@ -47,6 +47,16 @@
         "early_stop": 10,
 
         "tensorboard": true,
-        "mlflow": true
+        "mlflow": true,
+
+        "_percent": "Percentage of noise",
+        "percent": 0.7,
+        "_begin": "When to begin updating labels",
+        "begin": 70,
+        "_alpha, beta": "Hyper parameter of loss function",
+        "alpha": 1.2,
+        "beta": 0.8,
+        "_asym": "symmetric noise if false",
+        "asym": false
     }
 }

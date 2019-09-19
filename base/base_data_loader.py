@@ -23,9 +23,6 @@ class BaseDataLoader(DataLoader):
         self.batch_idx = 0
         self.n_samples = len(train_dataset) if val_dataset is None else len(train_dataset) + len(val_dataset)
 
-        if val_dataset is None:
-            self.sampler, self.valid_sampler = self._split_sampler(self.validation_split)
-
         self.init_kwargs = {
             'dataset': train_dataset,
             'batch_size': batch_size,
@@ -33,7 +30,11 @@ class BaseDataLoader(DataLoader):
             'collate_fn': collate_fn,
             'num_workers': num_workers
         }
-        super().__init__(sampler=self.sampler, **self.init_kwargs)
+        if val_dataset is None:
+            self.sampler, self.valid_sampler = self._split_sampler(self.validation_split)
+            super().__init__(sampler=self.sampler, **self.init_kwargs)
+        else:
+            super().__init__(**self.init_kwargs)
 
     def _split_sampler(self, split) -> Union[Tuple[None, None], Tuple[SubsetRandomSampler, SubsetRandomSampler]]:
         if split == 0.0:
@@ -64,9 +65,7 @@ class BaseDataLoader(DataLoader):
         return train_sampler, valid_sampler
 
     def split_validation(self):
-        if self.valid_sampler is None:
-            return None
-        elif self.val_dataset is not None:
+        if self.val_dataset is not None:
             kwargs = {
                 'dataset': self.val_dataset,
                 'batch_size': self.batch_size,

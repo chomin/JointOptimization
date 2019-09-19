@@ -9,6 +9,26 @@ from utils import read_json, write_json
 
 
 class ConfigParser:
+
+    __instance = None
+
+    def __new__(cls, args, options='', timestamp=True):
+        raise NotImplementedError('Cannot initialize via Constructor')
+
+    @classmethod
+    def __internal_new__(cls):
+        return super().__new__(cls)
+
+    @classmethod
+    def get_instance(cls, args=None, options='', timestamp=True):
+        if not cls.__instance:
+            if args is None:
+                NotImplementedError('Cannot initialize without args')
+            cls.__instance = cls.__internal_new__()
+            cls.__instance.__init__(args, options)
+
+        return cls.__instance
+
     def __init__(self, args, options='', timestamp=True):
         # parse default and custom cli options
         for opt in options:
@@ -23,7 +43,7 @@ class ConfigParser:
             self.cfg_fname = Path(args.config)
             config = read_json(self.cfg_fname)
             self.resume = None
-        else:        
+        else:
             self.resume = Path(args.resume)
             resume_cfg_fname = self.resume.parent / 'config.json'
             config = read_json(resume_cfg_fname)

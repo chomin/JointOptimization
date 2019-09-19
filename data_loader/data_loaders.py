@@ -1,6 +1,9 @@
+import sys
+
 from torchvision import datasets, transforms
 from base import BaseDataLoader
 from data_loader.cifar10 import get_cifar10
+from parse_config import ConfigParser
 
 
 class MnistDataLoader(BaseDataLoader):
@@ -19,7 +22,7 @@ class MnistDataLoader(BaseDataLoader):
 
 
 class CIFAR10DataLoader(BaseDataLoader):
-    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=4, training=True):
+    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=4):
         transform_train = transforms.Compose([
             transforms.RandomCrop(32, padding=8),
             transforms.RandomHorizontalFlip(),
@@ -31,7 +34,10 @@ class CIFAR10DataLoader(BaseDataLoader):
             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
         ])
         self.data_dir = data_dir
-        self.train_dataset, self.val_dataset = get_cifar10('./data', args,transform_train=transform_train, transform_val=transform_val)
+        config = ConfigParser.get_instance()
+        cfg_trainer = config['trainer']
+        self.train_dataset, self.val_dataset = get_cifar10(config['data_loader']['args']['data_dir'], cfg_trainer,
+                                                           transform_train=transform_train, transform_val=transform_val)
 
         super().__init__(self.train_dataset, batch_size, shuffle, validation_split, num_workers,
                          val_dataset=self.val_dataset)

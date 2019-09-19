@@ -14,9 +14,9 @@ class Trainer(BaseTrainer):
     Note:
         Inherited from BaseTrainer.
     """
-    def __init__(self, model, loss, metrics, optimizer, config, data_loader,
-                 valid_data_loader=None, lr_scheduler=None, len_epoch=None):
-        super().__init__(model, loss, metrics, optimizer, config)
+    def __init__(self, model, train_criterion, metrics, optimizer, config, data_loader,
+                 valid_data_loader=None, lr_scheduler=None, len_epoch=None, val_criterion=None):
+        super().__init__(model, train_criterion, metrics, optimizer, config, val_criterion)
         self.config = config
         self.data_loader = data_loader
         if len_epoch is None:
@@ -60,14 +60,19 @@ class Trainer(BaseTrainer):
 
         total_loss = 0
         total_metrics = np.zeros(len(self.metrics))
+        results = np.zeros((len(self.data_loader.dataset), 10), dtype=np.float32)
         with tqdm(self.data_loader) as progress:
-            for batch_idx, (data, target) in enumerate(progress):
+            for batch_idx, (data, target, soft_targets, indexs) in enumerate(progress):
                 progress.set_description_str(f'Train epoch {epoch}')
                 data, target = data.to(self.device), target.to(self.device)
+                soft_targets, indexs = soft_targets.to(self.device), indexs.to(self.device)
 
                 self.optimizer.zero_grad()
                 output = self.model(data)
-                loss = self.loss(output, target)
+                probs, loss = self.train_criterion(output, target)
+
+                results[indexs.cpu().detach().numpy().tolist()] = probs.cpu().detach().numpy().tolist()  # 要確認？
+
                 loss.backward()
                 self.optimizer.step()
 
@@ -94,6 +99,10 @@ class Trainer(BaseTrainer):
             'loss': total_loss / self.len_epoch,
             'metrics': (total_metrics / self.len_epoch).tolist()
         }
+
+        # update soft labels （論文には、CIFAR10の場合、ラベルの更新は70epoch目からとあるが...?）
+        if epoch > 69:
+            self.data_loader.dataset.label_update(results)
 
         if self.do_validation:
             val_log = self._valid_epoch(epoch)
@@ -123,7 +132,7 @@ class Trainer(BaseTrainer):
                     data, target = data.to(self.device), target.to(self.device)
 
                     output = self.model(data)
-                    loss = self.loss(output, target)
+                    loss = self.val_criterion(output, target)
 
                     self.writer.set_step((epoch - 1) * len(self.valid_data_loader) + batch_idx, 'valid')
                     self.writer.add_scalar('loss', loss.item())

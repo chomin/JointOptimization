@@ -48,7 +48,8 @@ def main(config: ConfigParser):
     logger.info(model)
 
     # get function handles of loss and metrics
-    loss = getattr(module_loss, config['loss'])
+    train_loss = getattr(module_loss, config['train_loss'])
+    val_loss = getattr(module_loss, config['val_loss'])
     metrics = [getattr(module_metric, met) for met in config['metrics']]
 
     # build optimizer, learning rate scheduler. delete every lines containing lr_scheduler for disabling scheduler
@@ -57,11 +58,12 @@ def main(config: ConfigParser):
 
     lr_scheduler = config.initialize('lr_scheduler', torch.optim.lr_scheduler, optimizer)
 
-    trainer = Trainer(model, loss, metrics, optimizer,
+    trainer = Trainer(model, train_loss, metrics, optimizer,
                       config=config,
                       data_loader=data_loader,
                       valid_data_loader=valid_data_loader,
-                      lr_scheduler=lr_scheduler)
+                      lr_scheduler=lr_scheduler,
+                      val_criterion=val_loss)
 
     trainer.train()
     logger = config.get_logger('trainer', config['trainer']['verbosity'])
@@ -75,10 +77,10 @@ def main(config: ConfigParser):
         log_params(config.config)
 
         # Log results into mlflow
-        for loss in trainer.train_loss_list:
-            mlflow.log_metric('train_loss', loss)
-        for loss in trainer.val_loss_list:
-            mlflow.log_metric('val_loss', loss)
+        for train_loss in trainer.train_loss_list:
+            mlflow.log_metric('train_loss', train_loss)
+        for train_loss in trainer.val_loss_list:
+            mlflow.log_metric('val_loss', train_loss)
 
         # Log other info
         # mlflow.log_param('loss_type', 'CrossEntropy')

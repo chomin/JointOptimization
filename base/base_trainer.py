@@ -10,7 +10,7 @@ class BaseTrainer:
     """
     Base class for all trainers
     """
-    def __init__(self, model, loss, metrics, optimizer, config):
+    def __init__(self, model, train_criterion, metrics, optimizer, config, val_criterion):
         self.config = config
         self.logger = config.get_logger('trainer', config['trainer']['verbosity'])
 
@@ -20,7 +20,8 @@ class BaseTrainer:
         if len(device_ids) > 1:
             self.model = torch.nn.DataParallel(model, device_ids=device_ids)
 
-        self.loss = loss
+        self.train_criterion = train_criterion
+        self.val_criterion = val_criterion
         self.metrics = metrics
         self.optimizer = optimizer
 

@@ -3,7 +3,7 @@
     "n_gpu": 2,
 
     "arch": {
-        "type": "JointOprimization",
+        "type": "PreActResNet34",
         "args": {}
     },
     "data_loader": {
@@ -17,14 +17,15 @@
         }
     },
     "optimizer": {
-        "type": "Adam",
+        "type": "SGD",
         "args":{
-            "lr": 0.001,
-            "weight_decay": 0,
-            "amsgrad": true
+            "lr": 0.08,
+            "momentum": 0.9,
+            "weight_decay": 1e-4
         }
     },
-    "loss": "cross_entropy",
+    "train_loss": "mycriterion",
+    "val_loss": "cross_entropy",
     "metrics": [
         "my_metric", "my_metric2"
     ],

@@ -74,6 +74,15 @@ def main(config: ConfigParser):
 
     with mlflow.start_run() as run:
         # Log args into mlflow
+        dic: OrderedDict = config.config
+        for key in dic.keys():
+            removing_keys = []
+            if key.startwith("_"):
+                removing_keys.append(key)
+
+        for key in removing_keys:
+            dic.pop(key)
+
         log_params(config.config)
 
         # Log results into mlflow

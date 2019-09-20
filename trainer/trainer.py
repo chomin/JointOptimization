@@ -70,8 +70,6 @@ class Trainer(BaseTrainer):
 
                 output = self.model(data)
 
-                print(output)
-
                 probs, loss = self.train_criterion(output, soft_targets)
 
                 results[indexs.cpu().detach().numpy().tolist()] = probs.cpu().detach().numpy().tolist()  # 要確認？

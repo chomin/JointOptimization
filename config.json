@@ -10,9 +10,9 @@
         "type": "CIFAR10DataLoader",
         "args":{
             "data_dir": "~/data/",
-            "batch_size": 256,
+            "batch_size": 1,
             "shuffle": true,
-            "validation_split": 0.1,
+            "validation_split": 1,
             "num_workers": 2
         }
     },
@@ -33,7 +33,7 @@
         "type": "StepLR",
         "args": {
             "step_size": 50,
-            "gamma": 0.1
+            "gamma": 1.0
         }
     },
     "trainer": {

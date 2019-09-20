@@ -21,12 +21,6 @@ def mycriterion(outputs, soft_targets):
     probs = F.softmax(outputs, dim=1)
     avg_probs = torch.mean(probs, dim=0)
 
-    a=outputs.size()
-    b=soft_targets.size()
-    c=0
-
-
-
     L_c = -torch.mean(torch.sum(F.log_softmax(outputs, dim=1) * soft_targets, dim=1))
     L_p = -torch.sum(torch.log(avg_probs) * p)
     L_e = -torch.mean(torch.sum(F.log_softmax(outputs, dim=1) * probs, dim=1))

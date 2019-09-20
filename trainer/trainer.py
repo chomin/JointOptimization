@@ -69,7 +69,7 @@ class Trainer(BaseTrainer):
 
                 self.optimizer.zero_grad()
                 output = self.model(data)
-                probs, loss = self.train_criterion(output, target)
+                probs, loss = self.train_criterion(output, soft_targets)
 
                 results[indexs.cpu().detach().numpy().tolist()] = probs.cpu().detach().numpy().tolist()  # 要確認？
 

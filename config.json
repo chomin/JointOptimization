@@ -10,9 +10,9 @@
         "type": "CIFAR10DataLoader",
         "args":{
             "data_dir": "~/data/",
-            "batch_size": 1,
+            "batch_size": 128,
             "shuffle": true,
-            "validation_split": 1,
+            "validation_split": 0,
             "num_workers": 2
         }
     },

@@ -33,7 +33,7 @@
         "type": "StepLR",
         "args": {
             "step_size": 50,
-            "gamma": 0.1
+            "gamma": 1.0
         }
     },
     "trainer": {

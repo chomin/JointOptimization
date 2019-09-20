@@ -5,6 +5,7 @@ from typing import List
 from torchvision.utils import make_grid
 from base import BaseTrainer
 from utils import inf_loop
+import sys
 
 
 class Trainer(BaseTrainer):
@@ -67,12 +68,15 @@ class Trainer(BaseTrainer):
                 data, target = data.to(self.device), target.to(self.device)
                 soft_targets, indexs = soft_targets.to(self.device), indexs.to(self.device)
 
-                self.optimizer.zero_grad()
                 output = self.model(data)
+
+                print(output)
+
                 probs, loss = self.train_criterion(output, soft_targets)
 
                 results[indexs.cpu().detach().numpy().tolist()] = probs.cpu().detach().numpy().tolist()  # 要確認？
 
+                self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
 
@@ -101,8 +105,7 @@ class Trainer(BaseTrainer):
         }
 
         # update soft labels （論文には、CIFAR10の場合、ラベルの更新は70epoch目からとあるが...?）
-        if epoch > 69:
-            self.data_loader.dataset.label_update(results)
+        self.data_loader.dataset.label_update(results)
 
         if self.do_validation:
             val_log = self._valid_epoch(epoch)

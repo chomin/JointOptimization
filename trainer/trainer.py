@@ -128,7 +128,7 @@ class Trainer(BaseTrainer):
         total_val_metrics = np.zeros(len(self.metrics))
         with torch.no_grad():
             with tqdm(self.valid_data_loader) as progress:
-                for batch_idx, (data, target) in enumerate(progress):
+                for batch_idx, (data, target, _, _) in enumerate(progress):
                     progress.set_description_str(f'Valid epoch {epoch}')
                     data, target = data.to(self.device), target.to(self.device)
 

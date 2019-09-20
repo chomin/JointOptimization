@@ -10,7 +10,7 @@
         "type": "CIFAR10DataLoader",
         "args":{
             "data_dir": "~/data/",
-            "batch_size": 128,
+            "batch_size": 768,
             "shuffle": true,
             "validation_split": 0,
             "num_workers": 2

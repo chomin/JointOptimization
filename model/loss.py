@@ -1,6 +1,8 @@
 import torch.nn.functional as F
 import torch
 
+from parse_config import ConfigParser
+
 
 def nll_loss(output, target):
     return F.nll_loss(output, target)
@@ -19,9 +21,17 @@ def mycriterion(outputs, soft_targets):
     probs = F.softmax(outputs, dim=1)
     avg_probs = torch.mean(probs, dim=0)
 
+    a=outputs.size()
+    b=soft_targets.size()
+    c=0
+
+
+
     L_c = -torch.mean(torch.sum(F.log_softmax(outputs, dim=1) * soft_targets, dim=1))
     L_p = -torch.sum(torch.log(avg_probs) * p)
     L_e = -torch.mean(torch.sum(F.log_softmax(outputs, dim=1) * probs, dim=1))
 
-    loss = L_c + args.alpha * L_p + args.beta * L_e
+    config = ConfigParser.get_instance()
+    cfg_trainer = config['trainer']
+    loss = L_c + cfg_trainer['alpha'] * L_p + cfg_trainer['beta'] * L_e
     return probs, loss

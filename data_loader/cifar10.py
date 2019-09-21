@@ -101,9 +101,9 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
             self.train_labels = np.argmax(self.soft_labels, axis=1).astype(np.int64)
 
         if self.count == self.cfg_trainer['epochs']:
-            np.save(f'{self.cfg_trainer["out"]}/images.npy', self.train_data)
-            np.save(f'{self.cfg_trainer["out"]}/labels.npy', self.train_labels)
-            np.save(f'{self.cfg_trainer["out"]}/soft_labels.npy', self.soft_labels)
+            np.save(f'{self.cfg_trainer["save_dir"]}/images.npy', self.train_data)
+            np.save(f'{self.cfg_trainer["save_dir"]}/labels.npy', self.train_labels)
+            np.save(f'{self.cfg_trainer["save_dir"]}/soft_labels.npy', self.soft_labels)
 
     def reload_label(self):
         self.train_data = np.load(f'{self.cfg_trainer["label"]}/images.npy')

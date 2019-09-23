@@ -1,5 +1,5 @@
 {
-    "name": "JointOprimization",
+    "name": "JointOptimization",
     "n_gpu": 4,
 
     "arch": {

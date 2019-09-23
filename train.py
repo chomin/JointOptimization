@@ -77,13 +77,13 @@ def main(config: ConfigParser):
         dic: OrderedDict = config.config
         for key in dic.keys():
             removing_keys = []
-            if key.startwith("_"):
+            if key.startswith("_"):
                 removing_keys.append(key)
 
         for key in removing_keys:
             dic.pop(key)
 
-        log_params(config.config)
+        log_params(dic)
 
         # Log results into mlflow
         for train_loss in trainer.train_loss_list:

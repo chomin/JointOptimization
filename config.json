@@ -42,6 +42,7 @@
         "save_dir": "saved/",
         "save_period": 1,
         "verbosity": 2,
+        "label_dir": "saved/",
         
         "monitor": "min val_loss",
         "early_stop": 10,

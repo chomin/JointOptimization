@@ -106,9 +106,9 @@ class CIFAR10_train(torchvision.datasets.CIFAR10):
             np.save(f'{self.cfg_trainer["save_dir"]}/soft_labels.npy', self.soft_labels)
 
     def reload_label(self):
-        self.train_data = np.load(f'{self.cfg_trainer["label"]}/images.npy')
-        self.train_labels = np.load(f'{self.cfg_trainer["label"]}/labels.npy')
-        self.soft_labels = np.load(f'{self.cfg_trainer["label"]}/soft_labels.npy')
+        self.train_data = np.load(f'{self.cfg_trainer["label_dir"]}/images.npy')
+        self.train_labels = np.load(f'{self.cfg_trainer["label_dir"]}/labels.npy')
+        self.soft_labels = np.load(f'{self.cfg_trainer["label_dir"]}/soft_labels.npy')
 
     def __getitem__(self, index):
         """
